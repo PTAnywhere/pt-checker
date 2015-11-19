@@ -81,7 +81,7 @@ public class PTChecker extends PacketTracerClient {
 
     public static void main(String[] args) throws Exception {
         if (args.length<2) {
-            System.out.println("usage: java PTChecker hostname port [timeout]\n");
+            System.out.println("usage: java PTChecker hostname port [timeout] [file] [deviceToFind]\n");
             System.out.println("Checks the time needed to contact a PacketTracer instance.\n");
             System.out.println("\thostname\tstring with the name of the Packet Tracer instance host.");
             System.out.println("\tport    \tan integer for the port number of the Packet Tracer instance.");

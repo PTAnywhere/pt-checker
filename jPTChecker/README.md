@@ -6,7 +6,7 @@ It can also be used to measure the average response time of the instance for a p
 
 ## Compilation
 
-This project is [mavenizied](https://maven.apache.org/).
+This project is [mavenized](https://maven.apache.org/).
 Note that this class depends on the ptipc library.
 I cannot provide a version of it as its intellectual property belongs to Cisco.
 
@@ -22,5 +22,11 @@ I recommend you to use the second one as it might be more handy to run it in oth
 ## Usage
 
 ```
-java -jar JPTChecker-jar-with-dependencies.jar [hostname] [port]
+java -jar JPTChecker-jar-with-dependencies.jar hostname port [timeout] [file] [deviceToFind]
 ```
+
+ * __hostname__ string with the name of the Packet Tracer instance host.
+ * __port__ an integer for the port number of the Packet Tracer instance.
+ * __timeout__ (optional, default: 5) number of seconds that the program will retry connections.
+ * __file__ (optional) file to be opened
+ * __deviceToFind__ (optional) a device which should be found in the PT instance.
