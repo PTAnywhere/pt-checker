@@ -5,8 +5,21 @@ Module to check if a Packet Tracer instance is running.
 """
 
 import subprocess
+from time import time, sleep
 
 
-def check(jar_path, hostname='localhost', port=39000, timeout=1.0, check_every=0.2, file=None, deviceToFind=None):
-    ret = subprocess.check_output(['java', '-jar', jar_path, hostname, str(port), str(int(timeout))])
-    return int(ret)
+def is_running(jar_path, hostname='localhost', port=39000, timeout=1.0, wait_between_retries=0.2, file=None, deviceToFind=None):
+    current = time()
+    ends_at = current + timeout
+    while current<ends_at:
+	args = ['java', '-jar', jar_path, hostname, str(port), '1']
+	if file:
+	    args.append(file)
+        if deviceToFind:
+   	    args.append(deviceToFind)
+    	ret = int( subprocess.check_output(args) )
+	if ret!=-1: return True
+   	current = time()
+	if current<ends_at:
+	    sleep(wait_between_retries)
+    return False
