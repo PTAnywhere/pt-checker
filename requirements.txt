@@ -1,0 +1,2 @@
+# Let's reuse the requirements specified in setup.py
+-e .
