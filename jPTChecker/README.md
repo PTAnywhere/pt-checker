@@ -27,6 +27,6 @@ java -jar JPTChecker-jar-with-dependencies.jar hostname port [timeout] [file] [d
 
  * __hostname__ string with the name of the Packet Tracer instance host.
  * __port__ an integer for the port number of the Packet Tracer instance.
- * __timeout__ (optional, default: 5) number of seconds that the program will retry connections.
+ * __timeout__ (optional, default: 5000) number of milliseconds that the program will retry connections.
  * __file__ (optional) file to be opened
  * __deviceToFind__ (optional) a device which should be found in the PT instance.

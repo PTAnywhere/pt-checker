@@ -25,15 +25,15 @@ import java.util.logging.Logger;
  */
 public class PTChecker extends PacketTracerClient {
 
-    final static int defaultWaitTime = 5;
+    final static int defaultWaitTime = 5000;
     final static int retryMiliseconds = 500;
 
     public PTChecker(String host, int port) {
         super(host, port);
     }
 
-    protected long waitUntilPTResponds(int maxWaitingSeconds, String file, String deviceName) throws Exception {
-        int waitingMs = maxWaitingSeconds * 1000;
+    protected long waitUntilPTResponds(int maxWaitingMillis, String file, String deviceName) throws Exception {
+        int waitingMs = maxWaitingMillis;
         final long init = System.currentTimeMillis();
         boolean alreadyOpened = file==null;
         while (waitingMs>0) {
@@ -86,7 +86,7 @@ public class PTChecker extends PacketTracerClient {
             System.out.println("\thostname\tstring with the name of the Packet Tracer instance host.");
             System.out.println("\tport    \tan integer for the port number of the Packet Tracer instance.");
             System.out.println("\ttimeout    \t(optional, default: " + PTChecker.defaultWaitTime +
-                                            ") number of seconds that the program will retry connections.");
+                                            ") number of milliseconds that the program will retry connections.");
             System.out.println("\tfile    \t(optional) file to be opened");
             System.out.println("\tdeviceToFind    \t(optional) a device which should be found in the PT instance.");
         } else {

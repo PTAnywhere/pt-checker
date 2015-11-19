@@ -12,7 +12,7 @@ def is_running(jar_path, hostname='localhost', port=39000, timeout=1.0, wait_bet
     current = time()
     ends_at = current + timeout
     while current<ends_at:
-	args = ['java', '-jar', jar_path, hostname, str(port), '1']
+	args = ['java', '-jar', jar_path, hostname, str(port), '1']  # 1 ms: try it once
 	if file:
 	    args.append(file)
         if deviceToFind:
