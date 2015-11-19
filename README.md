@@ -12,7 +12,7 @@ if is_running:
     print "The Packet Tracer instance answered. I.e., it is running."
 ```
 
- * __jar\_path_ the path to the jar to be executed to contact Packet Tracer (see the _jPTChecker_ directory).
+ * __jar\_path__ the path to the jar to be executed to contact Packet Tracer (see the _jPTChecker_ directory).
  * __hostname__ (optional, default: 'localhost') string with the name of the Packet Tracer instance host.
  * __port__ (optional, default: 39000) an int for the port number of the Packet Tracer instance.
  * __timeout__ (optional, default: 1.0) number of seconds while the program will retry connections.
