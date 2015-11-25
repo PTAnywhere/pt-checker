@@ -19,4 +19,7 @@ setup(name="ptchecker",
       # license = "http://www.apache.org/licenses/LICENSE-2.0",
       platforms=["any"],
       packages=["ptchecker"],
+      install_requires=[
+            "subprocess32"
+      ],
 )
