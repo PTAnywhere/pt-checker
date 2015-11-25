@@ -33,10 +33,11 @@ public class PTChecker extends PacketTracerClient {
     }
 
     protected long waitUntilPTResponds(int maxWaitingMillis, String file, String deviceName) throws Exception {
-        int waitingMs = maxWaitingMillis;
+        int remainingMs = maxWaitingMillis;
         final long init = System.currentTimeMillis();
         boolean alreadyOpened = file==null;
-        while (waitingMs>0) {
+        long ret = -1;
+        while (remainingMs>0 && ret==-1) {
             final long initLoop = System.currentTimeMillis();
             try {
                 final IPC ipc = getIPC();
@@ -58,20 +59,30 @@ public class PTChecker extends PacketTracerClient {
                     // Checking ends only when the device is found (if it was specified).
                     if (deviceName!=null) {
                         final CiscoDevice dev = (CiscoDevice) network.getDevice(deviceName);
-                        if (dev!=null) return System.currentTimeMillis() - init;  // elapsed
+                        if (dev!=null) {
+                          ret = System.currentTimeMillis() - init;  // elapsed
+                        }
                     } else {
-                        return System.currentTimeMillis() - init;  // elapsed
+                        ret = System.currentTimeMillis() - init;  // elapsed
                     }
                 }
             } catch(Error|Exception e) {
                 //e.printStackTrace();
             } finally {
-                final long elapsedLoop = System.currentTimeMillis() - initLoop;
-                if (elapsedLoop<PTChecker.retryMiliseconds) Thread.sleep(PTChecker.retryMiliseconds-elapsedLoop);
-                waitingMs -= PTChecker.retryMiliseconds;
+                if (ret==-1) {
+                  final long elapsedLoop = System.currentTimeMillis() - initLoop;
+                  // We substract the time already elapsed in this loop and
+                  // the time that it will need to wait for a new retry.
+                  remainingMs -= (elapsedLoop + PTChecker.retryMiliseconds);
+                  if (remainingMs>0) {
+                    // We wait only if we can make another attempt
+                    // (i.e. wait for the retry time) within the remaining time.
+                    Thread.sleep(PTChecker.retryMiliseconds);
+                  }
+                }
             }
         }
-        return -1;  // In miliseconds
+        return ret;  // In miliseconds
     }
 
     protected long getAverageResponseTime(int repetitions) {
