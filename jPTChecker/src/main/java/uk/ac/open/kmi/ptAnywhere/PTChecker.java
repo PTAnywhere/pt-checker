@@ -32,7 +32,7 @@ public class PTChecker extends PacketTracerClient {
         super(host, port);
     }
 
-    protected long waitUntilPTResponds(int maxWaitingMillis, String file, String deviceName) throws Exception {
+    protected long waitUntilPTResponds(int maxWaitingMillis, String file, String deviceName, boolean debug) throws Exception {
         int remainingMs = maxWaitingMillis;
         final long init = System.currentTimeMillis();
         boolean alreadyOpened = file==null;
@@ -67,7 +67,9 @@ public class PTChecker extends PacketTracerClient {
                     }
                 }
             } catch(Error|Exception e) {
-                //e.printStackTrace();
+                if (debug) {
+                    e.printStackTrace();
+                }
             } finally {
                 if (ret==-1) {
                   final long elapsedLoop = System.currentTimeMillis() - initLoop;
@@ -92,14 +94,15 @@ public class PTChecker extends PacketTracerClient {
 
     public static void main(String[] args) throws Exception {
         if (args.length<2) {
-            System.out.println("usage: java PTChecker hostname port [timeout] [file] [deviceToFind]\n");
+            System.out.println("usage: java PTChecker hostname port [timeout] [file] [deviceToFind] [--debug]\n");
             System.out.println("Checks the time needed to contact a PacketTracer instance.\n");
             System.out.println("\thostname\tstring with the name of the Packet Tracer instance host.");
             System.out.println("\tport    \tan integer for the port number of the Packet Tracer instance.");
             System.out.println("\ttimeout    \t(optional, default: " + PTChecker.defaultWaitTime +
                                             ") number of milliseconds that the program will retry connections.");
             System.out.println("\tfile    \t(optional) file to be opened");
-            System.out.println("\tdeviceToFind    \t(optional) a device which should be found in the PT instance.");
+            System.out.println("\tdeviceToFind \t(optional) a device which should be found in the PT instance.");
+            System.out.println("\t--debug    \t(optional) Show debug logs. This argument should always be the last one.");
         } else {
             Logger logger = Logger.getLogger("com.cisco.pt");
 
@@ -111,17 +114,28 @@ public class PTChecker extends PacketTracerClient {
             int waitTime = PTChecker.defaultWaitTime;
             String file = null;
             String deviceName = null;
+            boolean debug = false;
             if (args.length>=3) {
-                waitTime = Integer.parseInt(args[2]);
-            }
-            if (args.length>=4) {
-                file = args[3];
-            }
-            if (args.length>=5) {
-                deviceName = args[4];
+                // Check if the last argument is the debug flag.
+                if (args[args.length-1].equals("--debug")) {
+                    debug = true;
+                }
+                if (!debug || args.length>3) {
+                    waitTime = Integer.parseInt(args[2]);
+                }
+                if (args.length>=4) {
+                    if (!debug || args.length>4) {
+                        file = args[3];
+                    }
+                    if (args.length>=5) {
+                        if (!debug || args.length>5) {
+                            deviceName = args[4];
+                        }
+                    }
+                }
             }
             final PTChecker checker = new PTChecker(args[0], Integer.parseInt(args[1]));
-            System.out.println( checker.waitUntilPTResponds(waitTime, file, deviceName) );
+            System.out.println( checker.waitUntilPTResponds(waitTime, file, deviceName, debug) );
 
             checker.stop();
             //checker.getAverageResponseTime(100);
