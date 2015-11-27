@@ -3,7 +3,6 @@ Created on 19/11/2015
 @author: Aitor Gomez Goiri <aitor.gomez-goiri@open.ac.uk>
 Module to check if a Packet Tracer instance is running.
 """
-from ptchecker import is_running
 import subprocess32 as subprocess
 from time import time, sleep
 
