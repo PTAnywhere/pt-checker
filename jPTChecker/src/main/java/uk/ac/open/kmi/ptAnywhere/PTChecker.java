@@ -42,6 +42,7 @@ public class PTChecker extends PacketTracerClient {
             try {
                 final IPC ipc = getIPC();
                 if (!alreadyOpened) {
+                    ipc.appWindow().setVisible(true);
                     // I open a new file before opening another to make sure that
                     // I'm not testing other file opened before (e.g., if the
                     // file opening fails, the already opened file might answer).
@@ -51,6 +52,8 @@ public class PTChecker extends PacketTracerClient {
                     } else {
                         ipc.appWindow().fileOpen(file);
                     }
+                    ipc.appWindow().setVisible(false);
+                    ipc.appWindow().showMinimized();
                     alreadyOpened = true;
                 }
                 if (alreadyOpened) {
