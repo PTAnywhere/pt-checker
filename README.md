@@ -13,7 +13,7 @@ if is_running:
 
 try:
     rountrip_time = ptchecker.get_roundtrip_time(jar_path, hostname, port, timeout, wait_between_retries, file_path, device_to_find)
-    print "The Packet Tracer instance answered in %.2f secs." % rountrip_time
+    print "The Packet Tracer instance answered in %d msecs." % rountrip_time
 except Exception:
     print "The Packet Tracer instance didn't answer correctly within the given time."
 ```
