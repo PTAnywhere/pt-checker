@@ -7,17 +7,29 @@ import subprocess32 as subprocess
 from time import time, sleep
 
 
+class TimeoutError(Exception):
+    def __init__(self, hostname, port, time, attempts):
+        self.hostname = hostname
+        self.port = port
+        self.time = time
+        self.attempts = attempts
+
+    def __str__(self):
+        return 'Packet Tracer instance (%s:%d) did not answer (time: %.2f, attempts: %d).' % (self.hostname, self.port, self.time, self.attempts)
+
+
 def is_running(jar_path, hostname='localhost', port=39000, timeout=1.0, wait_between_retries=0.2, file_path=None, device_to_find=None):
     try:
         get_roundtrip_time(jar_path, hostname, port, timeout, wait_between_retries, file_path, device_to_find)
         return True
-    except Exception:
+    except TimeoutError:
         return False
 
 
 def get_roundtrip_time(jar_path, hostname='localhost', port=39000, timeout=1.0, wait_between_retries=0.2, file_path=None, device_to_find=None):
     current = time()
     ends_at = current + timeout
+    attempts = 0
     while current<ends_at:
         args = ['java', '-jar', jar_path, hostname, str(port), '1']  # 1 ms: try it once
         if file_path:
@@ -34,7 +46,8 @@ def get_roundtrip_time(jar_path, hostname='localhost', port=39000, timeout=1.0, 
                 return ret
         except subprocess.TimeoutExpired:
             pass
+        attempts += 1
         current = time()
         if current < ends_at:
             sleep(wait_between_retries)
-    raise Exception('Packet Tracer instance did not answer within the given time.')
+    raise TimeoutError(hostname, port, timeout, attempts)
