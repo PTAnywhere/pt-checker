@@ -28,7 +28,8 @@ def is_running(jar_path, hostname='localhost', port=39000, timeout=1.0, wait_bet
 
 def get_roundtrip_time(jar_path, hostname='localhost', port=39000, timeout=1.0, wait_between_retries=0.2, file_path=None, device_to_find=None):
     current = time()
-    ends_at = current + timeout
+    began_at = current
+    ends_at = began_at + timeout
     attempts = 0
     while current<ends_at:
         args = ['java', '-jar', jar_path, hostname, str(port), '1']  # 1 ms: try it once
@@ -43,7 +44,9 @@ def get_roundtrip_time(jar_path, hostname='localhost', port=39000, timeout=1.0, 
             # (it shouldn't, but I cannot ensure that 'ptipc' does not get blocked).
             ret = int( subprocess.check_output(args, timeout=subprocess_timeout) )
             if ret != -1:
-                return ret
+                # We could use ret, but this will only consider the time needed
+                # in the last attempt.
+                return time() - began_at
         except subprocess.TimeoutExpired:
             pass
         attempts += 1
